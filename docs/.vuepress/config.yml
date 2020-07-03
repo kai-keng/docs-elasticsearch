@@ -1,5 +1,6 @@
 title: 'elasticseatch'
 description: '开坑啦 elasticseatch'
+base: "/docs-elasticsearch/"
 themeConfig:
   # 导航栏
   # nav:
