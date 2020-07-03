@@ -1,0 +1,24 @@
+{
+  "name": "docs-elasticsearch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kai-keng/docs-elasticsearch.git"
+  },
+  "keywords": [],
+  "author": "air-cc <c989692c@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kai-keng/docs-elasticsearch/issues"
+  },
+  "homepage": "https://github.com/kai-keng/docs-elasticsearch#readme",
+  "devDependencies": {
+    "vuepress": "^1.5.2"
+  }
+}
