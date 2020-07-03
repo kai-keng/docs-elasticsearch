@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>概念 | elasticseatch</title>
+    <meta name="generator" content="VuePress 1.5.2">
+    
+    <meta name="description" content="开坑啦 elasticseatch">
+    <link rel="preload" href="/assets/css/0.styles.34d67128.css" as="style"><link rel="preload" href="/assets/js/app.e5eb2554.js" as="script"><link rel="preload" href="/assets/js/2.a9d59eca.js" as="script"><link rel="preload" href="/assets/js/7.c34d0c51.js" as="script"><link rel="prefetch" href="/assets/js/10.c7e2add2.js"><link rel="prefetch" href="/assets/js/11.68a84e8f.js"><link rel="prefetch" href="/assets/js/3.54d3a012.js"><link rel="prefetch" href="/assets/js/4.7d5f245c.js"><link rel="prefetch" href="/assets/js/5.d2f68df7.js"><link rel="prefetch" href="/assets/js/6.17d8269a.js"><link rel="prefetch" href="/assets/js/8.d9f5ab2d.js"><link rel="prefetch" href="/assets/js/9.cd41a22e.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.34d67128.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">elasticseatch</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>入门</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/base/intro.html" class="sidebar-link">简介</a></li><li><a href="/base/install.html" class="sidebar-link">安装</a></li><li><a href="/base/concepts.html" aria-current="page" class="active sidebar-link">概念</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/base/concepts.html#索引" class="sidebar-link">索引</a></li><li class="sidebar-sub-header"><a href="/base/concepts.html#集群" class="sidebar-link">集群</a></li><li class="sidebar-sub-header"><a href="/base/concepts.html#文档-crud" class="sidebar-link">文档 CRUD</a></li><li class="sidebar-sub-header"><a href="/base/concepts.html#分词-analysis" class="sidebar-link">分词 Analysis</a></li><li class="sidebar-sub-header"><a href="/base/concepts.html#mapping-设置" class="sidebar-link">Mapping 设置</a></li></ul></li><li><a href="/base/data-source.html" class="sidebar-link">数据源接入</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="概念"><a href="#概念" class="header-anchor">#</a> 概念</h1> <h2 id="索引"><a href="#索引" class="header-anchor">#</a> 索引</h2> <p>基础配置项：</p> <ul><li>mapping: 逻辑上 定义文档的字段名及字段类型，类似 schema 定义</li> <li>shard: 物理上 索引的数据分散到 Shard 上，类似数据库分片</li> <li>type: 7.0 后一个索引只能创建一个 Type: _doc</li></ul> <p>倒排索引：</p> <ul><li>单词词典（Term Dictionary）：从文档中拆分出来的单词及其于倒排列表的关联关系</li> <li>倒排列表（Posting List）：单词对应在文档中的信息，其包含的倒排索引项如下：
+<ul><li>文档ID</li> <li>词频：单词在文档出现的次数，用于相关性算分</li> <li>位置：单词在文档中分词的位置，用于语句搜索</li> <li>偏移：单词出现的开始结束位置</li></ul></li></ul> <p>文档基本结构：</p> <div class="language- extra-class"><pre class="language-text"><code>_index
+_type
+_id
+_source
+_version
+_score
+</code></pre></div><h2 id="集群"><a href="#集群" class="header-anchor">#</a> 集群</h2> <h4 id="节点-node"><a href="#节点-node" class="header-anchor">#</a> 节点 Node</h4> <p>一个节点实际即一个运行 ElasticSearch 的实例</p> <ul><li>Master-eligible Node： Master-eligible 节点有权限参与 master 节点选举，只有master节点可修改集群状态</li></ul> <blockquote><p>集群状态信息包括:
+- 节点信息
+- 索引的 Mapping 及 Setting 信息
+- Shard 分片路由信息</p></blockquote> <ul><li>Data Node: 保存分片数据</li> <li>Coordinating Node: 接受请求，分发至节点处理，聚合结果，默认每个节点都具备 Coordinating Node 职责</li> <li>Hot &amp; Warm Node: 冷热节点，新数据 Date Node 机器配置较好(Hot Node)，旧数据 不经常用的数据配置性能较差的机器(Warm Node)</li></ul> <p>通常生产环境一个节点只分配一个角色</p> <h4 id="分片-shard"><a href="#分片-shard" class="header-anchor">#</a> 分片 Shard</h4> <p>一个分片实际即为一个运行 Lucene 的实例</p> <ul><li>主分片（Primary Shard）：解决数据水平拓展问题，通过主分片将数据分布到集群中的所有节点上，主分片数是创建索引时指定，修改需要 Reindex</li> <li>副本（Replica Shard）：解决数据高可用问题，为主分片的拷贝，副本分片数可动态调整</li></ul> <div class="language- extra-class"><pre class="language-text"><code>{
+    &quot;setting&quot;: {
+        &quot;index&quot;: {
+            &quot;number_of_shards&quot;: 3,      // 分片数
+            &quot;number_of_replicas&quot;: 1,    // 分片副本数
+        }     
+    }
+}
+</code></pre></div><p>集群健康状态</p> <ul><li>Green: 主分片及副本均正常</li> <li>Yellow: 主分片正常，有副本分片未正常分配</li> <li>Red：有主分片未能分配</li></ul> <h2 id="文档-crud"><a href="#文档-crud" class="header-anchor">#</a> 文档 CRUD</h2> <h4 id="单一操作"><a href="#单一操作" class="header-anchor">#</a> 单一操作</h4> <div class="language- extra-class"><pre class="language-text"><code># 创建或更新文档（相当于mongodb upsert）- 无论是否需要值更新 都会删除 重新创建 version 值都会变
+POST users/_doc/1
+{
+  &quot;name&quot;: &quot;Mike&quot;,
+  &quot;age&quot;: 2
+}
+
+# id 查询
+GET users/_doc/1
+
+
+# 更新文档字段 - 值相同时 不执行更新操作 version 值不变
+POST users/_update/1
+{
+  &quot;doc&quot;: {
+    &quot;age&quot;: 7
+  }
+}
+</code></pre></div><h4 id="批量操作-bulk"><a href="#批量操作-bulk" class="header-anchor">#</a> 批量操作 _bulk</h4> <div class="language- extra-class"><pre class="language-text"><code># 批量操作索引文档
+POST _bulk
+{ &quot;index&quot;: { &quot;_index&quot;: &quot;users&quot;, &quot;_id&quot;: 2 } }
+{&quot;name&quot;: &quot;Tony&quot;, &quot;age&quot;: 0}
+{&quot;delete&quot;: { &quot;_index&quot;: &quot;movies&quot;, &quot;_id&quot;: &quot;77889900&quot;}}
+</code></pre></div><h4 id="批量读取-mget"><a href="#批量读取-mget" class="header-anchor">#</a> 批量读取 _mget</h4> <div class="language- extra-class"><pre class="language-text"><code># 批量读取文档 1
+GET _mget
+{
+  &quot;docs&quot;: [
+     { &quot;_index&quot;: &quot;users&quot;, &quot;_id&quot;: 1 },
+     { &quot;_index&quot;: &quot;movies&quot;, &quot;_id&quot;: 1 }
+  ]
+}
+
+# 批量读取文档 2
+GET users/_mget
+{
+  &quot;ids&quot;: [1, 2]
+}
+</code></pre></div><h4 id="批量查询-msearch"><a href="#批量查询-msearch" class="header-anchor">#</a> 批量查询 _msearch</h4> <div class="language- extra-class"><pre class="language-text"><code># 批量查询文档
+GET movies/_msearch
+{}
+{ &quot;query&quot; : { &quot;match_all&quot;: {} }, &quot;size&quot;: 1 }
+{}
+{ &quot;query&quot; : { &quot;match_all&quot;: {} }, &quot;from&quot;: 1, &quot;size&quot;: 1 }
+</code></pre></div><h4 id="一些常见错误"><a href="#一些常见错误" class="header-anchor">#</a> 一些常见错误</h4> <ul><li>无法连接：网络故障或集群故障</li> <li>连接无法关闭：网络故障或者节点出错</li> <li>429：集群过于繁忙</li></ul> <h2 id="分词-analysis"><a href="#分词-analysis" class="header-anchor">#</a> 分词 Analysis</h2> <p>elasticSearch 分词器 Analyzer，分为三部分：</p> <ul><li>Character Filters: 原始文本处理，如去除 html 标签</li> <li>Tokenizer: 按规则切分单词</li> <li>Token Filter: 处理切分出来的单词，如大写转小写</li></ul> <p>常用中文分词器：<a href="https://github.com/medcl/elasticsearch-analysis-ik" target="_blank" rel="noopener noreferrer">elasticsearch-analysis-ik<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>：支持自定义词库及热更新词库</p> <div class="language- extra-class"><pre class="language-text"><code># 内置标准分词器
+GET /_analyze
+{
+  &quot;analyzer&quot;: &quot;standard&quot;, 
+  &quot;text&quot;: &quot;hello world&quot;
+}
+
+# 中文插件分词器
+GET /_analyze
+{
+  &quot;analyzer&quot;: &quot;ik_smart&quot;, 
+  &quot;text&quot;: &quot;朝闻国盛：2019年度医药行业研究策略报告&quot;
+}
+</code></pre></div><h2 id="mapping-设置"><a href="#mapping-设置" class="header-anchor">#</a> Mapping 设置</h2> <p>Mapping: 类似于 schema，其定义了索引中字段的名称 / 数据类型 / 倒排索引配置</p> <ul><li>Mapping 将 JSON 文档映射为 Lucene 中的偏平格式</li> <li>一个文档只属于一个索引 Type，7.0 无需为 Mapping 设置 Type</li></ul> <h4 id="数据类型"><a href="#数据类型" class="header-anchor">#</a> 数据类型</h4> <ul><li>Text / Keyword</li> <li>Integer / Float</li> <li>Date</li> <li>IPV4 / IPV6</li> <li>Object</li> <li>其他：geo_point ...</li></ul> <h4 id="dynamic-mappings"><a href="#dynamic-mappings" class="header-anchor">#</a> Dynamic Mappings</h4> <p>写入文档时，elasticsearch 可自根据 json 格式自动创建索引，推算 Mapping 类型</p> <p>对于<code>新增字段</code>：</p> <ul><li>Dynamic: true  文档写入成功，自动更新 Mapping；</li> <li>Dynamic: false 文档写入成功，Mapping 不更新，字段无法被用于索引，但可在 _source 中找到相关信息；</li> <li>Dynamic: strict 文档写入失败；</li></ul> <p>对于<code>现有字段</code>：Mapping 字段不可修改，只能通过 reindex 重建索引</p> <div class="language- extra-class"><pre class="language-text"><code>PUT /users/_doc/1
+{
+    &quot;name&quot;: &quot;Nick&quot;,
+    &quot;age&quot;: 10,
+    &quot;created_time&quot;: &quot;2020-07-01T00:03:59Z&quot;
+}
+
+
+PUT /users/_mapping
+{
+  &quot;dynamic&quot;: &quot;false&quot;
+}
+
+PUT /users/_doc/1
+{
+    &quot;name&quot;: &quot;Nick&quot;,
+    &quot;age&quot;: 10,
+    &quot;from&quot;: &quot;shanghai china&quot;,
+    &quot;created_time&quot;: &quot;2020-07-01T00:03:59Z&quot;
+}
+
+GET /users/_mapping
+
+# 报错 from 字段未建倒排索引 无法查找
+GET /users/_search?q=from:china 
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/base/install.html" class="prev">
+        安装
+      </a></span> <span class="next"><a href="/base/data-source.html">
+        数据源接入
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.e5eb2554.js" defer></script><script src="/assets/js/2.a9d59eca.js" defer></script><script src="/assets/js/7.c34d0c51.js" defer></script>
+  </body>
+</html>
