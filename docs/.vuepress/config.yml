@@ -20,4 +20,5 @@ themeConfig:
         - /base/intro
         - /base/install
         - /base/concepts
+        - /base/query-dsl
         - /base/data-source
