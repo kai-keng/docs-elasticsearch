@@ -187,8 +187,9 @@ GET ri_search_reports/_search
 * phrase search 短语搜索
 * 索引中必须同时匹配拆分后词就可以出现在结果中
 * 比如查询：PHILIPS toothbrush，会被拆分成两个单词：PHILIPS 和 toothbrush。索引中必须有同时有这两个单词的才会在结果中
+* match_phrase还有一个slop参数，因为match_phrase的匹配规则比较严格，但是有时候我们往往不需要如此严格的匹配，比如PHILIPS toothbrush，我们可以允许两个词中间穿插着一些其他的词，这样模糊的搜索我们想要的结果，这个时候就可以使用slop参数。slop参数表示的是允许我们的分词中间隔指定词数以下的情况也可以匹配上。比如：slop=5，表示两个分词中穿插5个以内的其他分词，都能被搜索出来。
 
-例：
+例-match_phrase：
 ```
 GET ri_search_reports/_search
 {
@@ -196,6 +197,21 @@ GET ri_search_reports/_search
     "match_phrase": {
       "rpt_subtit": {
         "query": "定义核心资产"
+      }
+    }
+  }
+}
+```
+
+例-match_phrase-slop：
+```
+GET ri_search_reports/_search
+{
+  "query": {
+    "match_phrase": {
+      "rpt_subtit": {
+        "query": "定义核心资产",
+        "slop": 5
       }
     }
   }
@@ -374,14 +390,46 @@ GET ri_search_reports/_search
 }
 ```
 
-### slop 用法
-待更新
-
-### rescore，window_size重新打分
-待更新
-
 ### sort 排序
-待更新
+* ES支持查询排序，可以选择文档字段进行升序或降序排列
+* 如果你想要使用数组字段进行排序，那必须要配合mode字段，选择模式来排序，mode支持`min`、`max`、`avg`，`sum`
+
+例-普通排序:
+```
+GET ri_search_reports/_search
+{
+  "query": {
+    "match": {
+      "rpt_subtit": "定义核心资产"
+    }
+  },
+  "sort": [
+    {
+      "rpt_subtit": { "order", "asc" }
+    },
+    {
+      "author_names": { "order", "desc" }
+    }
+  ]
+}
+```
+
+例-多字段值排序：
+```
+GET ri_search_reports/_search
+{
+  "query": {
+    "match": {
+      "rpt_subtit": "定义核心资产"
+    }
+  },
+  "sort": [
+    {
+      "test": {"order" : "asc", "mode": "min"}
+    }
+  ]
+}
+```
 
 ## 参考资料
 1. [Elasticsearch DSL 常用语法介绍](https://blog.csdn.net/jiaminbao/article/details/80105636?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase)
