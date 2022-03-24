@@ -1,0 +1,43 @@
+version: '2.2'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.3
+    container_name: kibana73
+    environment:
+      - I18N_LOCALE=zh-CN
+      - XPACK_GRAPH_ENABLED=true
+      - TIMELION_ENABLED=true
+      - XPACK_MONITORING_COLLECTION_ENABLED="true"
+    ports:
+      - "5601:5601"
+    networks:
+      - esnet
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    container_name: es73
+    environment:
+      - cluster.name=geektime
+      - node.name=es73
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.seed_hosts=es73
+      - cluster.initial_master_nodes=es73
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es73data1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - esnet
+
+
+volumes:
+  es73data1:
+    driver: local
+
+networks:
+  esnet:
+    driver: bridge
