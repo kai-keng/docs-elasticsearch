@@ -2,6 +2,8 @@
 
 > You know, for search (and analysis)
 
+[官方 What IS](https://www.elastic.co/cn/what-is/elasticsearch)
+
 Elasticsearch 是一个分布式的搜索及分析引擎，是 Elastic Stack 的核心组件。 Logstash 和 Beats 用于收集数据。Kibana 用于数据查询及可视化。
 
 Elasticsearch 面向所有类型的数据提供近实时的搜索分析能力。包括结构化、非结构化的数据、数值型数据、地理（GEO）数据，Elasticsearch 可以高效的存储及索引。

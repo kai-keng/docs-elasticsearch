@@ -1,0 +1,28 @@
+{
+    "settings": {
+        "number_of_shards": 3,
+        "number_of_replicas": 1,
+        "analysis": {
+            "analyzer": {}
+        }
+    },
+    "mapping": {
+        "properties": {
+            "title": {
+                "type": "text"
+            },
+            "intro": {
+                "type": "text"
+            },
+            "author": {
+                "type": "text"
+            },
+            "publish_time": {
+                "type": "text"
+            },
+            "labels": {
+                "type": "text"
+            }
+        }
+    }
+}

@@ -24,7 +24,7 @@ docker run --name es-node01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.e
 将 http CA 证书从容器中拷贝出来，并验证 ES 服务是否正常启动
 
 ```shell
-docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
+docker cp es01:/usr/share/elasticsearch/config/certs/ca/ca.crt .
 
 curl --cacert http_ca.crt -u elastic https://localhost:9200
 ```
@@ -35,7 +35,7 @@ curl --cacert http_ca.crt -u elastic https://localhost:9200
 
 ## Docker 环境集群安装
 
-使用 `docker-compose` 部署集群服务
+使用 `docker-compose` 部署集群服务，参考官网文档，或[本文档示例](https://github.com/kai-keng/docs-elasticsearch/tree/master/scripts/docker/8.x)
 
 一些生产环境部署时的注意事项：
 
@@ -46,3 +46,13 @@ curl --cacert http_ca.crt -u elastic https://localhost:9200
 - 注意 `ulimits` 配置，保证打开的文件数 nofile 及启动的进程数 nproc 足够用
 - 性能考虑，禁用 `swapping` [相关说明](https://www.elastic.co/guide/en/elasticsearch/reference/8.1/setup-configuration-memory.html)
 
+其他一些生产环境部署时的注意事项参考官方文档[重要的系统设置](https://www.elastic.co/guide/en/elasticsearch/reference/8.1/system-config.html)注意检查
+
+
+## Kubernetes 安装
+
+TODO
+
+## 一些常用 API
+
+- cat 
