@@ -117,6 +117,7 @@ About
 
 # Project
 .tmp/
+scripts/docker/8.x/assets/
 
 # Nodejs
 node_modules/
