@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>基本使用 | elasticseatch</title>
+    <meta name="generator" content="VuePress 1.5.2">
+    
+    <meta name="description" content="开坑啦 elasticseatch">
+    <link rel="preload" href="/docs-elasticsearch/assets/css/0.styles.0ee83cee.css" as="style"><link rel="preload" href="/docs-elasticsearch/assets/js/app.b3b4b544.js" as="script"><link rel="preload" href="/docs-elasticsearch/assets/js/2.a9d59eca.js" as="script"><link rel="preload" href="/docs-elasticsearch/assets/js/12.46bbdc07.js" as="script"><link rel="prefetch" href="/docs-elasticsearch/assets/js/10.77e218fd.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/11.817df5ef.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/13.09cd365b.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/3.d8a31682.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/4.7d5f245c.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/5.d2f68df7.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/6.17d8269a.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/7.cf820b86.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/8.4d3d0d01.js"><link rel="prefetch" href="/docs-elasticsearch/assets/js/9.e42abb73.js">
+    <link rel="stylesheet" href="/docs-elasticsearch/assets/css/0.styles.0ee83cee.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/docs-elasticsearch/" class="home-link router-link-active"><!----> <span class="site-name">elasticseatch</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <!----></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><!---->  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>入门</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/docs-elasticsearch/base/intro.html" class="sidebar-link">简介</a></li><li><a href="/docs-elasticsearch/base/install.html" class="sidebar-link">安装</a></li><li><a href="/docs-elasticsearch/base/concepts.html" class="sidebar-link">概念</a></li><li><a href="/docs-elasticsearch/base/query-dsl.html" class="sidebar-link">Query DSL使用入门</a></li><li><a href="/docs-elasticsearch/base/data-source.html" class="sidebar-link">数据源接入</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="基本使用"><a href="#基本使用" class="header-anchor">#</a> 基本使用</h2> <h2 id="索引-index-管理"><a href="#索引-index-管理" class="header-anchor">#</a> 索引 Index 管理</h2> <ul><li>创建索引</li></ul> <div class="language- extra-class"><pre class="language-text"><code>PUT app/_create
+</code></pre></div><h2 id="文档-doc-crud"><a href="#文档-doc-crud" class="header-anchor">#</a> 文档 doc CRUD</h2> <h4 id="单一操作"><a href="#单一操作" class="header-anchor">#</a> 单一操作</h4> <div class="language- extra-class"><pre class="language-text"><code># 创建或更新文档（相当于mongodb upsert）- 无论是否需要值更新 都会删除 重新创建 version 值都会变
+POST users/_doc/1
+{
+  &quot;name&quot;: &quot;Mike&quot;,
+  &quot;age&quot;: 2
+}
+
+# id 查询
+GET users/_doc/1
+
+
+# 更新文档字段 - 值相同时 不执行更新操作 version 值不变
+POST users/_update/1
+{
+  &quot;doc&quot;: {
+    &quot;age&quot;: 7
+  }
+}
+</code></pre></div><h4 id="批量操作-bulk"><a href="#批量操作-bulk" class="header-anchor">#</a> 批量操作 _bulk</h4> <div class="language- extra-class"><pre class="language-text"><code># 批量操作索引文档
+POST _bulk
+{ &quot;index&quot;: { &quot;_index&quot;: &quot;users&quot;, &quot;_id&quot;: 2 } }
+{&quot;name&quot;: &quot;Tony&quot;, &quot;age&quot;: 0}
+{&quot;delete&quot;: { &quot;_index&quot;: &quot;movies&quot;, &quot;_id&quot;: &quot;77889900&quot;}}
+</code></pre></div><h4 id="批量读取-mget"><a href="#批量读取-mget" class="header-anchor">#</a> 批量读取 _mget</h4> <div class="language- extra-class"><pre class="language-text"><code># 批量读取文档 1
+GET _mget
+{
+  &quot;docs&quot;: [
+     { &quot;_index&quot;: &quot;users&quot;, &quot;_id&quot;: 1 },
+     { &quot;_index&quot;: &quot;movies&quot;, &quot;_id&quot;: 1 }
+  ]
+}
+
+# 批量读取文档 2
+GET users/_mget
+{
+  &quot;ids&quot;: [1, 2]
+}
+</code></pre></div><h4 id="批量查询-msearch"><a href="#批量查询-msearch" class="header-anchor">#</a> 批量查询 _msearch</h4> <div class="language- extra-class"><pre class="language-text"><code># 批量查询文档
+GET movies/_msearch
+{}
+{ &quot;query&quot; : { &quot;match_all&quot;: {} }, &quot;size&quot;: 1 }
+{}
+{ &quot;query&quot; : { &quot;match_all&quot;: {} }, &quot;from&quot;: 1, &quot;size&quot;: 1 }
+</code></pre></div><h4 id="一些常见错误"><a href="#一些常见错误" class="header-anchor">#</a> 一些常见错误</h4> <ul><li>无法连接：网络故障或集群故障</li> <li>连接无法关闭：网络故障或者节点出错</li> <li>429：集群过于繁忙</li></ul> <h2 id="mapping-设置"><a href="#mapping-设置" class="header-anchor">#</a> Mapping 设置</h2> <div class="language- extra-class"><pre class="language-text"><code>PUT /users/_doc/1
+{
+    &quot;name&quot;: &quot;Nick&quot;,
+    &quot;age&quot;: 10,
+    &quot;created_time&quot;: &quot;2020-07-01T00:03:59Z&quot;
+}
+
+PUT /users/_mapping
+{
+  &quot;dynamic&quot;: &quot;false&quot;
+}
+
+PUT /users/_doc/1
+{
+    &quot;name&quot;: &quot;Nick&quot;,
+    &quot;age&quot;: 10,
+    &quot;from&quot;: &quot;shanghai china&quot;,
+    &quot;created_time&quot;: &quot;2020-07-01T00:03:59Z&quot;
+}
+
+GET /users/_mapping
+
+# 报错 from 字段未建倒排索引 无法查找
+GET /users/_search?q=from:china 
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/docs-elasticsearch/assets/js/app.b3b4b544.js" defer></script><script src="/docs-elasticsearch/assets/js/2.a9d59eca.js" defer></script><script src="/docs-elasticsearch/assets/js/12.46bbdc07.js" defer></script>
+  </body>
+</html>
